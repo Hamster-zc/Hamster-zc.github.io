@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>写文章 · 拾光笔记</title>
+  <title>写文章 · 宇宙回声</title>
   <link rel="stylesheet" href="style.css">
   <style>
     .write-page{max-width:860px;margin:0 auto;padding:75px 0 100px}.write-page h1{font-family:'Noto Serif SC',serif;font-size:42px;margin:12px 0}.write-page>p{color:#89938a;font-size:13px;line-height:1.8}.write-form{background:#fff;border:1px solid #e4e7e1;padding:30px;margin-top:40px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.field{display:flex;flex-direction:column;gap:8px}.field label{font-size:11px;font-weight:700;color:#607667}.field input,.field textarea{border:1px solid #dfe4dd;padding:12px;outline:0;border-radius:3px;color:#36443b;background:#fcfcfa}.field input:focus,.field textarea:focus{border-color:#8fa993}.field textarea{min-height:320px;resize:vertical;line-height:1.7}.full{grid-column:1 / -1}.write-actions{display:flex;align-items:center;gap:20px;margin-top:24px}.write-actions button{border:0}.download-note{font-size:11px;color:#98a098}.write-back{display:inline-block;font-size:12px;color:#6e8371}.write-tip{margin:28px 0 0;padding:18px;background:#edf2eb;color:#6c806f;font-size:12px;line-height:1.8}@media(max-width:650px){.write-page{padding:55px 0}.write-page h1{font-size:34px}.write-form{padding:20px}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.write-actions{align-items:flex-start;flex-direction:column}}
@@ -11,7 +11,7 @@
 </head>
 <body>
   <div class="page-shell">
-    <header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">✳</span><span>拾光笔记<small>NOTES & THOUGHTS</small></span></a><a class="write-back" href="index.html">← 返回博客</a></header>
+    <header class="site-header"><a class="brand" href="index.html"><img class="brand-eye" src="assets/eye.svg" alt=""><span>宇宙回声<small>FIELD NOTES FROM THE WILDS</small></span></a><a class="write-back" href="index.html">← 返回博客</a></header>
     <main class="write-page">
       <span class="section-kicker">WRITE SOMETHING DOWN</span>
       <h1>写一篇新文章<span class="heading-dot">.</span></h1>
@@ -30,7 +30,7 @@
       </form>
       <div class="write-tip">发布步骤：下载文件 → 在 GitHub 仓库打开 <strong>posts</strong> 文件夹 → <strong>Add file → Upload files</strong> → 提交。网站会自动更新。<br>本地上传则把文件放入 <strong>C:\ZC\Blog\posts</strong>，运行 <strong>npm run build</strong>，再提交并推送。</div>
     </main>
-    <footer class="site-footer"><div><span class="footer-symbol">✳</span> 拾光笔记 <span class="footer-muted">/ 把日子写成文字</span></div><p>静态博客 · Markdown 驱动</p></footer>
+    <footer class="site-footer"><div><img class="footer-eye" src="assets/eye.svg" alt=""> 宇宙回声 <span class="footer-muted">/ 给好奇心留一份航行记录</span></div><p>静态博客 · Markdown 驱动</p></footer>
   </div>
   <script>
     const get = id => document.querySelector('#' + id).value.trim();

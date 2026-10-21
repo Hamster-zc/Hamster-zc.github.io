@@ -81,9 +81,8 @@ function card(post, index) {
 
 function home() {
   const recent = posts.slice(0, 3);
-  app.innerHTML = `<section class="hero"><div class="hero-copy"><div class="eyebrow"><span class="eyebrow-line"></span> A LITTLE SPACE FOR WORDS</div><h1>把日子<br><em>写成文字<span>。</span></em></h1><p>一个收集灵感与思考的小角落。<br>关于学习、阅读，还有那些值得记住的平凡时刻。</p><a class="primary-button" href="#/archive">探索文章 <span aria-hidden="true">↗</span></a><div class="hero-footnote">慢慢记录，自由生长 <span>✺</span></div></div><div class="hero-visual" aria-hidden="true"><div class="visual-circle circle-one"></div><div class="visual-circle circle-two"></div><div class="visual-asterisk">✳</div><div class="visual-caption">Collect moments,<br>connect thoughts.</div><div class="visual-index">VOL. 001 / ${new Date().getFullYear()}</div></div></section>
-  <section class="section latest"><div class="section-heading"><div><span class="section-kicker">01 / LATEST STORIES</span><h2>最近更新<span class="heading-dot">.</span></h2><p>新鲜的想法，正在这里慢慢长出来。</p></div><a class="text-link" href="#/archive">查看全部文章 <span aria-hidden="true">↗</span></a></div><div class="card-grid">${recent.map(card).join('')}</div></section>
-  <section class="bottom-note"><span>✳</span><div><h2>保持好奇，保持记录。</h2><p>每一篇文字，都是生活留下的小小回声。</p></div><a href="#/about">关于这个博客 <span aria-hidden="true">↗</span></a></section>`;
+  app.innerHTML = `<section class="voyage-hero"><div class="voyage-intro"><div><span class="section-kicker">✦　 A LITTLE SPACE FOR DISCOVERY</span><h1>宇宙回声<span>。</span></h1><p>给好奇心留一份航行记录。</p></div><div class="voyage-intro-aside">学习笔记、论文线索，<br>以及旅途中不想忘记的想法。<small>探索 / 记录 / 再出发</small></div></div><div class="voyage-art"><img src="assets/outer-wilds-campfire.jpg" alt="星空与松林之间，一簇篝火照亮旅人" fetchpriority="high"><div class="voyage-art-caption"><span>THE UNIVERSE IS ALWAYS LISTENING</span><a href="#/archive">翻阅日志 ↗</a></div></div></section>
+  <section class="voyage-latest"><div><span class="section-kicker">01 / LATEST STORIES</span><h2>最近更新<span class="heading-dot">。</span></h2></div><div class="voyage-posts">${recent.length ? recent.map(post => `<a href="${postUrl(post)}" class="voyage-post"><span>${esc(categoryText(post))}　·　<time datetime="${esc(post.date)}">${esc(post.date)}</time></span><strong>${esc(post.title)}</strong><small>${esc(post.summary)}</small></a>`).join('') : '<p>新的航行日志正在路上。</p>'}</div></section>`;
 }
 
 function archive() {
@@ -112,7 +111,7 @@ function article(slug) {
 }
 
 function about() {
-  app.innerHTML = `<section class="about-page"><div class="about-copy"><span class="section-kicker">03 / ABOUT THIS SPACE</span><h1>你好，这里是<br><em>拾光笔记<span class="heading-dot">.</span></em></h1><p>这是一个用来存放学习笔记和随笔的小站。好奇的问题、读过的句子，以及日常里不想忘记的片刻，都可以在这里慢慢留下。</p><p>内容会随着时间生长。希望每次翻看，都能发现一点新的联系。</p><a class="primary-button" href="#/archive">读读文章 <span aria-hidden="true">↗</span></a></div><div class="about-art" aria-hidden="true"><span class="about-star">✳</span><span class="about-note">STAY CURIOUS<br>KEEP WRITING</span></div></section>`;
+  app.innerHTML = `<section class="about-page"><div class="about-copy"><span class="section-kicker">03 / ABOUT THIS SPACE</span><h1>你好，这里是<br><em>宇宙回声<span class="heading-dot">.</span></em></h1><p>这是一个用来存放学习笔记和随笔的小站。好奇的问题、读过的句子，以及旅途中不想忘记的想法，都可以在这里慢慢留下。</p><p>内容会随着时间生长。希望每次翻看，都能发现一点新的联系。</p><a class="primary-button" href="#/archive">读读文章 <span aria-hidden="true">↗</span></a></div><div class="about-art" aria-hidden="true"><img src="assets/outer-wilds-campfire.jpg" alt=""><span class="about-note">STAY CURIOUS<br>KEEP EXPLORING</span></div></section>`;
 }
 
 function notFound() { app.innerHTML = '<section class="not-found"><span>✳</span><h1>这一页走丢了</h1><p>或许可以从首页重新开始。</p><a class="primary-button" href="#/">回到首页 ↗</a></section>'; }
