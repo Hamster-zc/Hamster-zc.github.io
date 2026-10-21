@@ -20,11 +20,16 @@ function parsePost(source, filename) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(meta.date) || Number.isNaN(Date.parse(`${meta.date}T00:00:00Z`))) {
     throw new Error(`${filename}: date 必须是 YYYY-MM-DD`);
   }
+  const categoryParts = meta.category.split('/').map(part => part.trim());
+  if (categoryParts.length > 2 || categoryParts.some(part => !part)) {
+    throw new Error(`${filename}: category 应为「一级分类」或「一级分类/二级分类」`);
+  }
   return {
     slug: path.basename(filename, '.md'),
     title: meta.title,
     date: meta.date,
-    category: meta.category,
+    category: categoryParts[0],
+    subcategory: categoryParts[1] || '',
     summary: meta.summary,
     tags: (meta.tags || '').split(',').map(tag => tag.trim()).filter(Boolean),
     body: match[2].trim()

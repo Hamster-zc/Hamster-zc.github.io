@@ -4,7 +4,9 @@ const dateText = date => new Intl.DateTimeFormat('zh-CN', { year: 'numeric', mon
 const postUrl = post => `#/post/${encodeURIComponent(post.slug)}`;
 let posts = [];
 let category = '全部';
+let subcategory = '全部';
 let query = '';
+const categoryText = post => [post.category, post.subcategory].filter(Boolean).join(' / ');
 
 function inline(source) {
   return esc(source)
@@ -46,7 +48,7 @@ function card(post, index) {
   const colors = ['peach', 'lavender', 'mint', 'sand'];
   return `<a class="post-card" href="${postUrl(post)}">
     <div class="card-art ${colors[index % colors.length]}"><span>${String(index + 1).padStart(2, '0')}</span><i aria-hidden="true">${['✳', '✦', '✼', '❋'][index % 4]}</i></div>
-    <div class="card-content"><div class="card-meta"><span>${esc(post.category)}</span><span class="meta-dot"></span><time datetime="${esc(post.date)}">${dateText(post.date)}</time></div>
+    <div class="card-content"><div class="card-meta"><span>${esc(categoryText(post))}</span><span class="meta-dot"></span><time datetime="${esc(post.date)}">${dateText(post.date)}</time></div>
     <h3>${esc(post.title)}</h3><p>${esc(post.summary)}</p><span class="read-more">阅读全文 <span aria-hidden="true">↗</span></span></div>
   </a>`;
 }
@@ -60,24 +62,26 @@ function home() {
 
 function archive() {
   const categories = ['全部', ...new Set(posts.map(post => post.category))];
-  app.innerHTML = `<section class="inner-heading"><span class="section-kicker">02 / ALL STORIES</span><h1>文章归档<span class="heading-dot">.</span></h1><p>按主题翻阅，或搜索你感兴趣的内容。</p></section><section class="archive-tools"><div class="category-tabs" role="group" aria-label="文章分类">${categories.map(item => `<button type="button" data-category="${esc(item)}" class="${category === item ? 'active' : ''}">${esc(item)}</button>`).join('')}</div><label class="search-box"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="搜索文章..." value="${esc(query)}" aria-label="搜索文章"></label></section><section><div class="archive-count" id="archive-count"></div><div class="archive-list" id="archive-list"></div></section>`;
-  app.querySelectorAll('[data-category]').forEach(button => button.addEventListener('click', () => { category = button.dataset.category; archive(); }));
+  const subcategories = category === '全部' ? [] : [...new Set(posts.filter(post => post.category === category).map(post => post.subcategory).filter(Boolean))];
+  app.innerHTML = `<section class="inner-heading"><span class="section-kicker">02 / ALL STORIES</span><h1>文章归档<span class="heading-dot">.</span></h1><p>按主题翻阅，或搜索你感兴趣的内容。</p></section><section class="archive-tools"><div class="category-tabs" role="group" aria-label="一级分类">${categories.map(item => `<button type="button" data-category="${esc(item)}" class="${category === item ? 'active' : ''}">${esc(item)}</button>`).join('')}</div><label class="search-box"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="搜索文章或关键词..." value="${esc(query)}" aria-label="搜索文章"></label></section>${subcategories.length ? `<div class="subcategory-tabs" role="group" aria-label="二级分类"><span>细分主题</span>${['全部', ...subcategories].map(item => `<button type="button" data-subcategory="${esc(item)}" class="${subcategory === item ? 'active' : ''}">${esc(item)}</button>`).join('')}</div>` : ''}<section><div class="archive-count" id="archive-count"></div><div class="archive-list" id="archive-list"></div></section>`;
+  app.querySelectorAll('[data-category]').forEach(button => button.addEventListener('click', () => { category = button.dataset.category; subcategory = '全部'; archive(); }));
+  app.querySelectorAll('[data-subcategory]').forEach(button => button.addEventListener('click', () => { subcategory = button.dataset.subcategory; archive(); }));
   app.querySelector('#search').addEventListener('input', event => { query = event.target.value; renderArchiveList(); });
   renderArchiveList();
 }
 
 function renderArchiveList() {
   const term = query.trim().toLocaleLowerCase();
-  const matching = posts.filter(post => (category === '全部' || post.category === category) && (!term || [post.title, post.summary, post.category, ...post.tags].join(' ').toLocaleLowerCase().includes(term)));
+  const matching = posts.filter(post => (category === '全部' || post.category === category) && (subcategory === '全部' || post.subcategory === subcategory) && (!term || [post.title, post.summary, post.category, post.subcategory, ...post.tags].join(' ').toLocaleLowerCase().includes(term)));
   app.querySelector('#archive-count').textContent = `共 ${matching.length} 篇文章`;
-  app.querySelector('#archive-list').innerHTML = matching.length ? matching.map(post => `<a class="archive-row" href="${postUrl(post)}"><time datetime="${esc(post.date)}">${dateText(post.date)}</time><div><span class="row-category">${esc(post.category)}</span><h2>${esc(post.title)}</h2><p>${esc(post.summary)}</p></div><span class="row-arrow" aria-hidden="true">↗</span></a>`).join('') : '<div class="empty-state">暂时没有找到相关文章。换个关键词试试吧。</div>';
+  app.querySelector('#archive-list').innerHTML = matching.length ? matching.map(post => `<a class="archive-row" href="${postUrl(post)}"><time datetime="${esc(post.date)}">${dateText(post.date)}</time><div><span class="row-category">${esc(categoryText(post))}</span><h2>${esc(post.title)}</h2><p>${esc(post.summary)}</p></div><span class="row-arrow" aria-hidden="true">↗</span></a>`).join('') : '<div class="empty-state">暂时没有找到相关文章。换个关键词试试吧。</div>';
 }
 
 function article(slug) {
   const post = posts.find(item => item.slug === slug);
   if (!post) { notFound(); return; }
   const related = posts.filter(item => item.slug !== slug && item.category === post.category).slice(0, 2);
-  app.innerHTML = `<article class="article"><a class="back-link" href="#/archive">← 返回文章归档</a><header class="article-header"><div class="card-meta"><span>${esc(post.category)}</span><span class="meta-dot"></span><time datetime="${esc(post.date)}">${dateText(post.date)}</time></div><h1>${esc(post.title)}</h1><p>${esc(post.summary)}</p></header><div class="article-divider"><span>✳</span></div><div class="article-body">${markdown(post.body)}</div><div class="article-end"><span>写于 ${dateText(post.date)}</span><div>${post.tags.map(tag => `<span class="tag"># ${esc(tag)}</span>`).join('')}</div></div></article><section class="related"><div class="section-heading"><div><span class="section-kicker">KEEP READING</span><h2>继续阅读<span class="heading-dot">.</span></h2></div><a class="text-link" href="#/archive">全部文章 ↗</a></div><div class="related-list">${related.length ? related.map(item => `<a href="${postUrl(item)}"><span>${esc(item.category)}</span><strong>${esc(item.title)}</strong><span aria-hidden="true">↗</span></a>`).join('') : '<p>更多文章正在路上。</p>'}</div></section>`;
+  app.innerHTML = `<article class="article"><a class="back-link" href="#/archive">← 返回文章归档</a><header class="article-header"><div class="card-meta"><span>${esc(categoryText(post))}</span><span class="meta-dot"></span><time datetime="${esc(post.date)}">${dateText(post.date)}</time></div><h1>${esc(post.title)}</h1><p>${esc(post.summary)}</p></header><div class="article-divider"><span>✳</span></div><div class="article-body">${markdown(post.body)}</div><div class="article-end"><span>写于 ${dateText(post.date)}</span><div>${post.tags.map(tag => `<span class="tag"># ${esc(tag)}</span>`).join('')}</div></div></article><section class="related"><div class="section-heading"><div><span class="section-kicker">KEEP READING</span><h2>继续阅读<span class="heading-dot">.</span></h2></div><a class="text-link" href="#/archive">全部文章 ↗</a></div><div class="related-list">${related.length ? related.map(item => `<a href="${postUrl(item)}"><span>${esc(categoryText(item))}</span><strong>${esc(item.title)}</strong><span aria-hidden="true">↗</span></a>`).join('') : '<p>更多文章正在路上。</p>'}</div></section>`;
 }
 
 function about() {
