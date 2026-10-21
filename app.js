@@ -19,21 +19,47 @@ function inline(source) {
 function markdown(source) {
   const lines = source.replace(/\r\n/g, '\n').split('\n');
   const out = [];
-  let list = false, code = false, codeLines = [];
-  const closeList = () => { if (list) { out.push('</ul>'); list = false; } };
-  for (const line of lines) {
-    if (line.startsWith('```')) {
+  let list = '', code = false, codeLines = [], fence = '';
+  const closeList = () => { if (list) { out.push(`</${list}>`); list = ''; } };
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const codeFence = line.match(/^(`{3,}|~{3,})/);
+    if ((!code && codeFence) || (code && line.startsWith(fence))) {
       closeList();
       if (code) { out.push(`<pre><code>${esc(codeLines.join('\n'))}</code></pre>`); codeLines = []; }
+      else fence = codeFence[1];
       code = !code;
       continue;
     }
     if (code) { codeLines.push(line); continue; }
     if (!line.trim()) { closeList(); continue; }
+    if (line.trim() === '$$') {
+      closeList();
+      const mathLines = [];
+      while (++i < lines.length && lines[i].trim() !== '$$') mathLines.push(lines[i]);
+      out.push(`<div class="math-display">$$\n${esc(mathLines.join('\n'))}\n$$</div>`);
+      continue;
+    }
+    if (/^\|.*\|$/.test(line.trim()) && /^\|[\s:|-]+\|$/.test((lines[i + 1] || '').trim())) {
+      closeList();
+      const cells = row => row.trim().slice(1, -1).split('|').map(cell => cell.trim());
+      out.push(`<div class="table-scroll"><table><thead><tr>${cells(line).map(cell => `<th>${inline(cell)}</th>`).join('')}</tr></thead><tbody>`);
+      i++;
+      while (i + 1 < lines.length && /^\|.*\|$/.test(lines[i + 1].trim())) {
+        out.push(`<tr>${cells(lines[++i]).map(cell => `<td>${inline(cell)}</td>`).join('')}</tr>`);
+      }
+      out.push('</tbody></table></div>');
+      continue;
+    }
     const heading = line.match(/^(#{1,6})\s+(.+)$/);
     if (heading) { closeList(); const level = Math.min(heading[1].length + 1, 6); out.push(`<h${level}>${inline(heading[2])}</h${level}>`); continue; }
-    const item = line.match(/^[-*]\s+(.+)$/);
-    if (item) { if (!list) { out.push('<ul>'); list = true; } out.push(`<li>${inline(item[1])}</li>`); continue; }
+    const item = line.match(/^(?:[-*]|\d+\.)\s+(.+)$/);
+    if (item) {
+      const type = /^\d+\./.test(line) ? 'ol' : 'ul';
+      if (list !== type) { closeList(); out.push(`<${type}>`); list = type; }
+      out.push(`<li>${inline(item[1])}</li>`);
+      continue;
+    }
     closeList();
     if (/^>\s?/.test(line)) out.push(`<blockquote>${inline(line.replace(/^>\s?/, ''))}</blockquote>`);
     else if (/^---+$/.test(line.trim())) out.push('<hr>');
@@ -82,6 +108,7 @@ function article(slug) {
   if (!post) { notFound(); return; }
   const related = posts.filter(item => item.slug !== slug && item.category === post.category).slice(0, 2);
   app.innerHTML = `<article class="article"><a class="back-link" href="#/archive">← 返回文章归档</a><header class="article-header"><div class="card-meta"><span>${esc(categoryText(post))}</span><span class="meta-dot"></span><time datetime="${esc(post.date)}">${dateText(post.date)}</time></div><h1>${esc(post.title)}</h1><p>${esc(post.summary)}</p></header><div class="article-divider"><span>✳</span></div><div class="article-body">${markdown(post.body)}</div><div class="article-end"><span>写于 ${dateText(post.date)}</span><div>${post.tags.map(tag => `<span class="tag"># ${esc(tag)}</span>`).join('')}</div></div></article><section class="related"><div class="section-heading"><div><span class="section-kicker">KEEP READING</span><h2>继续阅读<span class="heading-dot">.</span></h2></div><a class="text-link" href="#/archive">全部文章 ↗</a></div><div class="related-list">${related.length ? related.map(item => `<a href="${postUrl(item)}"><span>${esc(categoryText(item))}</span><strong>${esc(item.title)}</strong><span aria-hidden="true">↗</span></a>`).join('') : '<p>更多文章正在路上。</p>'}</div></section>`;
+  if (window.MathJax?.typesetPromise) window.MathJax.typesetPromise([app.querySelector('.article-body')]);
 }
 
 function about() {
