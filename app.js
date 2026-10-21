@@ -131,7 +131,7 @@ function route() {
 
 document.querySelector('#year').textContent = `© ${new Date().getFullYear()}`;
 try {
-  const response = await fetch('generated/posts.json');
+  const response = await fetch('generated/posts.json', { cache: 'no-store' });
   if (!response.ok) throw new Error('无法读取文章数据');
   posts = await response.json();
   route();
