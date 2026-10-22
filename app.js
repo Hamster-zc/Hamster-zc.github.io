@@ -111,7 +111,7 @@ function article(slug) {
 }
 
 function about() {
-  app.innerHTML = `<section class="about-page"><div class="about-copy"><span class="section-kicker">03 / ABOUT THIS SPACE</span><h1>你好，这里是<br><em>宇宙回声<span class="heading-dot">.</span></em></h1><p>这是一个用来存放学习笔记和随笔的小站。好奇的问题、读过的句子，以及旅途中不想忘记的想法，都可以在这里慢慢留下。</p><p>内容会随着时间生长。希望每次翻看，都能发现一点新的联系。</p><a class="primary-button" href="#/archive">读读文章 <span aria-hidden="true">↗</span></a></div><div class="about-art" aria-hidden="true"><img src="assets/outer-wilds-campfire.jpg" alt=""><span class="about-note">STAY CURIOUS<br>KEEP EXPLORING</span></div></section>`;
+  app.innerHTML = `<section class="about-page"><div class="about-copy"><span class="section-kicker">03 / ABOUT THIS SPACE</span><h1>你好，这里是<br><em>宇宙回声</em></h1><p>这是一个用来存放学习笔记和随笔的小站。好奇的问题、读过的句子，以及日常里不想忘记的片刻，都可以在这里慢慢留下。</p><p>内容会随着时间生长。希望每次翻看，都能发现一点新的联系。</p><a class="primary-button" href="#/archive">读读文章 <span aria-hidden="true">↗</span></a></div><div class="about-art" aria-hidden="true"><img src="assets/outer-wilds-campfire.jpg" alt=""><span class="about-note">STAY CURIOUS<br>KEEP EXPLORING</span></div></section>`;
 }
 
 function notFound() { app.innerHTML = '<section class="not-found"><span>✳</span><h1>这一页走丢了</h1><p>或许可以从首页重新开始。</p><a class="primary-button" href="#/">回到首页 ↗</a></section>'; }
