@@ -82,7 +82,7 @@ function card(post, index) {
 function home() {
   const recent = posts.slice(0, 3);
   app.innerHTML = `<section class="voyage-hero"><div class="voyage-intro"><div><span class="section-kicker">✦　 A LITTLE SPACE FOR DISCOVERY</span><h1>宇宙回声</h1><p>给好奇心留一份航行记录。</p></div><div class="voyage-intro-aside">学习笔记、论文线索，<br>以及旅途中不想忘记的想法。<small>探索 / 记录 / 再出发</small></div></div><div class="voyage-art"><img src="assets/outer-wilds-campfire.jpg" alt="星空与松林之间，一簇篝火照亮旅人" fetchpriority="high"><div class="voyage-art-caption"><span>THE UNIVERSE IS ALWAYS LISTENING</span><a href="#/archive">翻阅日志 ↗</a></div></div></section>
-  <section class="voyage-latest"><div><span class="section-kicker">01 / LATEST STORIES</span><h2>最近更新<span class="heading-dot">。</span></h2></div><div class="voyage-posts">${recent.length ? recent.map(post => `<a href="${postUrl(post)}" class="voyage-post"><span>${esc(categoryText(post))}　·　<time datetime="${esc(post.date)}">${esc(post.date)}</time></span><strong>${esc(post.title)}</strong><small>${esc(post.summary)}</small></a>`).join('') : '<p>新的航行日志正在路上。</p>'}</div></section>`;
+  <section class="voyage-latest"><div><span class="section-kicker">01 / LATEST STORIES</span><h2>最近更新</h2></div><div class="voyage-posts">${recent.length ? recent.map(post => `<a href="${postUrl(post)}" class="voyage-post"><span>${esc(categoryText(post))}　·　<time datetime="${esc(post.date)}">${esc(post.date)}</time></span><strong>${esc(post.title)}</strong><small>${esc(post.summary)}</small></a>`).join('') : '<p>新的航行日志正在路上。</p>'}</div></section>`;
 }
 
 function archive() {
