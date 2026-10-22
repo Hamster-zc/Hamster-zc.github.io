@@ -8,6 +8,16 @@ let subcategory = '全部';
 let query = '';
 const categoryText = post => [post.category, post.subcategory].filter(Boolean).join(' / ');
 
+function typesetArticleMath() {
+  const body = app.querySelector('.article-body');
+  if (!body || !window.MathJax?.typesetPromise) return;
+  Promise.resolve(window.MathJax.startup?.promise)
+    .then(() => window.MathJax.typesetPromise([body]))
+    .catch(error => console.error('公式渲染失败', error));
+}
+
+window.addEventListener('mathjax-ready', typesetArticleMath);
+
 function inline(source) {
   return esc(source)
     .replace(/`([^`]+)`/g, '<code>$1</code>')
@@ -107,7 +117,7 @@ function article(slug) {
   if (!post) { notFound(); return; }
   const related = posts.filter(item => item.slug !== slug && item.category === post.category).slice(0, 2);
   app.innerHTML = `<article class="article"><a class="back-link" href="#/archive">← 返回文章归档</a><header class="article-header"><div class="card-meta"><span>${esc(categoryText(post))}</span><span class="meta-dot"></span><time datetime="${esc(post.date)}">${dateText(post.date)}</time></div><h1>${esc(post.title)}</h1><p>${esc(post.summary)}</p></header><div class="article-divider"><span>✳</span></div><div class="article-body">${markdown(post.body)}</div><div class="article-end"><span>写于 ${dateText(post.date)}</span><div>${post.tags.map(tag => `<span class="tag"># ${esc(tag)}</span>`).join('')}</div></div></article><section class="related"><div class="section-heading"><div><span class="section-kicker">KEEP READING</span><h2>继续阅读<span class="heading-dot">.</span></h2></div><a class="text-link" href="#/archive">全部文章 ↗</a></div><div class="related-list">${related.length ? related.map(item => `<a href="${postUrl(item)}"><span>${esc(categoryText(item))}</span><strong>${esc(item.title)}</strong><span aria-hidden="true">↗</span></a>`).join('') : '<p>更多文章正在路上。</p>'}</div></section>`;
-  if (window.MathJax?.typesetPromise) window.MathJax.typesetPromise([app.querySelector('.article-body')]);
+  typesetArticleMath();
 }
 
 function about() {

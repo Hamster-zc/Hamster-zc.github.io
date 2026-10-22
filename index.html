@@ -9,8 +9,8 @@
   <link rel="icon" type="image/svg+xml" href="assets/favicon-eye.svg?v=3">
   <link rel="stylesheet" href="style.css">
   <script>window.MathJax = {tex: {inlineMath: [['$', '$']], displayMath: [['$$', '$$']]}, startup: {typeset: false}};</script>
-  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" onload="MathJax.startup.promise.then(() => { const body = document.querySelector('.article-body'); if (body) MathJax.typesetPromise([body]); })"></script>
-  <script type="module" src="app.js?v=4"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" onload="window.dispatchEvent(new Event('mathjax-ready'))"></script>
+  <script type="module" src="app.js?v=5"></script>
 </head>
 <body>
   <div class="page-shell">
