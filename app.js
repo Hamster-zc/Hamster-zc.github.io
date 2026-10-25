@@ -20,6 +20,7 @@ window.addEventListener('mathjax-ready', typesetArticleMath);
 
 function inline(source) {
   return esc(source)
+    .replace(/!\[([^\]]*)\]\(((?:https?:\/\/|assets\/)[^\s)]+)(?:\s+"([^"]*)")?\)/g, '<img src="$2" alt="$1" loading="lazy" decoding="async">')
     .replace(/`([^`]+)`/g, '<code>$1</code>')
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
     .replace(/\*([^*]+)\*/g, '<em>$1</em>')
