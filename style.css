@@ -7,6 +7,9 @@
 .article-body ol{padding-left:1.7em;margin:0 0 1.3em}
 .article-body img{display:block;max-width:100%;height:auto;margin:1.5em auto;border-radius:4px}
 .article-body .math-display{overflow-x:auto;margin:1.4em 0;text-align:center}
+.article-body .markdown-indent{border-left:1px solid #d8ded5;margin:.45em 0 1.25em .15em;padding-left:1.45em}
+.article-body .markdown-indent p:last-child{margin-bottom:0}
+.article-body .markdown-indent .math-display{margin:1.2em 0}
 .article-body .table-scroll{overflow-x:auto;margin:1.4em 0}
 .article-body table{width:100%;border-collapse:collapse;font-size:.93em;line-height:1.7}
 .article-body th,.article-body td{border-bottom:1px solid #dfe5dc;padding:9px 12px;text-align:left;white-space:nowrap}

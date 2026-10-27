@@ -30,8 +30,16 @@ function inline(source) {
 function markdown(source) {
   const lines = source.replace(/\r\n/g, '\n').split('\n');
   const out = [];
-  let list = '', code = false, codeLines = [], fence = '';
-  const closeList = () => { if (list) { out.push(`</${list}>`); list = ''; } };
+  let list = '', itemOpen = false, indentDepth = 0, code = false, codeLines = [], fence = '';
+  const setIndent = depth => {
+    while (indentDepth > depth) { out.push('</div>'); indentDepth--; }
+    while (indentDepth < depth) { out.push('<div class="markdown-indent">'); indentDepth++; }
+  };
+  const closeList = () => {
+    setIndent(0);
+    if (itemOpen) { out.push('</li>'); itemOpen = false; }
+    if (list) { out.push(`</${list}>`); list = ''; }
+  };
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const codeFence = line.match(/^(`{3,}|~{3,})/);
@@ -43,16 +51,22 @@ function markdown(source) {
       continue;
     }
     if (code) { codeLines.push(line); continue; }
-    if (!line.trim()) { closeList(); continue; }
+    if (!line.trim()) {
+      const next = lines.slice(i + 1).find(value => value.trim());
+      if (!next || !/^\t/.test(next)) closeList();
+      continue;
+    }
+    const depth = (line.match(/^\t+/) || [''])[0].length;
+    if (depth) setIndent(depth);
     if (line.trim() === '$$') {
-      closeList();
+      if (!depth) closeList();
       const mathLines = [];
       while (++i < lines.length && lines[i].trim() !== '$$') mathLines.push(lines[i]);
       out.push(`<div class="math-display">$$\n${esc(mathLines.join('\n'))}\n$$</div>`);
       continue;
     }
     if (/^\|.*\|$/.test(line.trim()) && /^\|[\s:|-]+\|$/.test((lines[i + 1] || '').trim())) {
-      closeList();
+      if (!depth) closeList();
       const cells = row => row.trim().slice(1, -1).split('|').map(cell => cell.trim());
       out.push(`<div class="table-scroll"><table><thead><tr>${cells(line).map(cell => `<th>${inline(cell)}</th>`).join('')}</tr></thead><tbody>`);
       i++;
@@ -67,14 +81,17 @@ function markdown(source) {
     const item = line.match(/^(?:[-*]|\d+\.)\s+(.+)$/);
     if (item) {
       const type = /^\d+\./.test(line) ? 'ol' : 'ul';
+      setIndent(0);
       if (list !== type) { closeList(); out.push(`<${type}>`); list = type; }
-      out.push(`<li>${inline(item[1])}</li>`);
+      if (itemOpen) out.push('</li>');
+      out.push(`<li>${inline(item[1])}`);
+      itemOpen = true;
       continue;
     }
-    closeList();
-    if (/^>\s?/.test(line)) out.push(`<blockquote>${inline(line.replace(/^>\s?/, ''))}</blockquote>`);
+    if (!depth) closeList();
+    if (/^>\s?/.test(line.trim())) out.push(`<blockquote>${inline(line.trim().replace(/^>\s?/, ''))}</blockquote>`);
     else if (/^---+$/.test(line.trim())) out.push('<hr>');
-    else out.push(`<p>${inline(line)}</p>`);
+    else out.push(`<p>${inline(line.trimStart())}</p>`);
   }
   closeList();
   if (code) out.push(`<pre><code>${esc(codeLines.join('\n'))}</code></pre>`);
