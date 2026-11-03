@@ -9,11 +9,11 @@ npm run build
 npm run dev
 ```
 
-打开 http://localhost:4173 。新增文章可以打开 `/write.html`，下载 Markdown 文件后放进 `posts/`，再运行 `npm run build`。
+打开 http://localhost:4173 。新增文章可以打开 `/write.html`，下载 Markdown 文件后放进与分类对应的 `posts/` 子文件夹，再运行 `npm run build`。
 
 ## 写文章和分类
 
-打开 `/write.html`，填写一级分类（例如“学习”）、二级分类（例如“NLP”）和关键词标签，再下载 Markdown 文件。也可以自己新建 `posts/2026-10-21-transformer.md`：
+打开 `/write.html`，填写一级分类（例如“学习”）、二级分类（例如“NLP”）和关键词标签，再下载 Markdown 文件。也可以自己新建 `posts/学习/NLP/2026-10-21-transformer.md`：
 
 ```md
 ---
@@ -31,11 +31,13 @@ tags: Transformer, 注意力机制, 论文阅读
 
 `category` 写成 `一级分类/二级分类`；二级分类可省略，例如 `category: 随笔`。归档页会先显示一级分类，选中后显示对应的二级分类。`tags` 是多个自由关键词，用英文逗号隔开，也能被搜索。
 
+文章按分类放在 `posts/一级分类/` 下；有二级分类时可再建一层，如 `posts/学习/NLP/`。当前文章位于 `posts/学习/` 和 `posts/随笔/`。构建脚本会读取 `posts/` 下各层的 Markdown 文件，移动文件不会改变博客文章链接。
+
 ## 上传 Markdown
 
-如果已发布到 GitHub，打开 [Hamster-zc.github.io 仓库的 posts 文件夹](https://github.com/Hamster-zc/Hamster-zc.github.io/tree/main/posts)，点击 **Add file → Upload files**，选择下载的 `.md` 文件，点击 **Commit changes**。稍等 [Actions](https://github.com/Hamster-zc/Hamster-zc.github.io/actions) 部署完成，博客就会显示新文章。文件必须放在 `posts/` 下，不能只上传到仓库根目录。
+如果已发布到 GitHub，打开 [Hamster-zc.github.io 仓库的 posts 文件夹](https://github.com/Hamster-zc/Hamster-zc.github.io/tree/main/posts)，进入对应的分类文件夹（如 `学习` 或 `随笔`），点击 **Add file → Upload files**，选择下载的 `.md` 文件，点击 **Commit changes**。新分类可先用 **Add file → Create new file** 在相应路径下创建文章。稍等 [Actions](https://github.com/Hamster-zc/Hamster-zc.github.io/actions) 部署完成，博客就会显示新文章。
 
-如果从本地上传，把文件放入 `C:\ZC\Blog\posts`，然后运行：
+如果从本地上传，把文件放入 `C:\ZC\Blog\posts\<一级分类>`（有二级分类时继续建子文件夹），然后运行：
 
 ```bash
 npm run build

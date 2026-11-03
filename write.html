@@ -16,7 +16,7 @@
     <main class="write-page">
       <span class="section-kicker">WRITE SOMETHING DOWN</span>
       <h1>写一篇新文章<span class="heading-dot">.</span></h1>
-      <p>填写信息后下载 Markdown 文件，再上传到 GitHub 仓库的 <code>posts</code> 文件夹。分类可以写成“学习 / NLP”，关键词标签可以填多个。</p>
+      <p>填写信息后下载 Markdown 文件，再上传到 GitHub 仓库的 <code>posts/一级分类/二级分类</code> 文件夹。二级分类可省略，关键词标签可以填多个。</p>
       <form class="write-form" id="write-form">
         <div class="form-grid">
           <div class="field"><label for="title">文章标题</label><input id="title" required placeholder="例如：Transformer 阅读笔记"></div>
@@ -29,7 +29,7 @@
         </div>
         <div class="write-actions"><button class="primary-button" type="submit">下载 Markdown <span aria-hidden="true">↓</span></button><span class="download-note" id="download-note">文件名会根据标题自动生成</span></div>
       </form>
-      <div class="write-tip">发布步骤：下载文件 → 在 GitHub 仓库打开 <strong>posts</strong> 文件夹 → <strong>Add file → Upload files</strong> → 提交。网站会自动更新。<br>本地上传则把文件放入 <strong>C:\ZC\Blog\posts</strong>，运行 <strong>npm run build</strong>，再提交并推送。</div>
+      <div class="write-tip">发布步骤：下载文件 → 在 GitHub 仓库打开对应的 <strong>posts/一级分类/二级分类</strong> 文件夹 → <strong>Add file → Upload files</strong> → 提交。没有二级分类时只需进入一级分类文件夹。网站会自动更新。<br>本地上传则把文件放入对应的 <strong>C:\ZC\Blog\posts</strong> 分类子文件夹，运行 <strong>npm run build</strong>，再提交并推送。</div>
     </main>
     <footer class="site-footer"><div><img class="footer-eye" src="assets/eye.svg" alt=""> 宇宙回声 <span class="footer-muted">/ 给好奇心留一份航行记录</span></div><p>静态博客 · Markdown 驱动</p></footer>
   </div>
@@ -52,7 +52,7 @@
       link.download = `${get('date')}-${slugify(get('title'))}.md`;
       link.click();
       setTimeout(() => URL.revokeObjectURL(link.href), 1000);
-      document.querySelector('#download-note').textContent = '已开始下载，可上传到 posts 文件夹';
+      document.querySelector('#download-note').textContent = `已开始下载，请上传到 posts/${category}/ 文件夹`;
     });
   </script>
 </body>

@@ -36,8 +36,23 @@ function parsePost(source, filename) {
   };
 }
 
-const files = (await readdir(postsDir)).filter(file => file.endsWith('.md'));
-const posts = await Promise.all(files.map(async file => parsePost(await readFile(path.join(postsDir, file), 'utf8'), file)));
+async function findMarkdownFiles(dir) {
+  const entries = await readdir(dir, { withFileTypes: true });
+  const nested = await Promise.all(entries.map(async entry => {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) return findMarkdownFiles(fullPath);
+    return entry.isFile() && entry.name.endsWith('.md') ? [fullPath] : [];
+  }));
+  return nested.flat();
+}
+
+const files = await findMarkdownFiles(postsDir);
+const posts = await Promise.all(files.map(async file => parsePost(await readFile(file, 'utf8'), path.relative(postsDir, file))));
+const slugs = new Set();
+for (const post of posts) {
+  if (slugs.has(post.slug)) throw new Error(`重复的文章文件名：${post.slug}.md`);
+  slugs.add(post.slug);
+}
 posts.sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title, 'zh'));
 await mkdir(outputDir, { recursive: true });
 await writeFile(path.join(outputDir, 'posts.json'), JSON.stringify(posts, null, 2) + '\n');
