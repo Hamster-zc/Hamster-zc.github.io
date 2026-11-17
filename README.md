@@ -13,7 +13,7 @@ npm run dev
 
 ## 写文章和分类
 
-打开 `/write.html`，填写一级分类（例如“学习”）、二级分类（例如“NLP”）和关键词标签，再下载 Markdown 文件。也可以自己新建 `posts/学习/NLP/2026-10-21-transformer.md`：
+打开 `/write.html`，填写一级分类（例如“学习”）、二级分类（例如“NLP”）和关键词标签，再下载 Markdown 文件。学习笔记按年月放入 `posts/学习/YYYY-MM/`，例如 `posts/学习/2026-10/2026-10-21-transformer.md`：
 
 ```md
 ---
@@ -31,13 +31,15 @@ tags: Transformer, 注意力机制, 论文阅读
 
 `category` 写成 `一级分类/二级分类`；二级分类可省略，例如 `category: 随笔`。归档页会先显示一级分类，选中后显示对应的二级分类。`tags` 是多个自由关键词，用英文逗号隔开，也能被搜索。
 
-文章按分类放在 `posts/一级分类/` 下；有二级分类时可再建一层，如 `posts/学习/NLP/`。当前文章位于 `posts/学习/` 和 `posts/随笔/`。构建脚本会读取 `posts/` 下各层的 Markdown 文件，移动文件不会改变博客文章链接。
+文章放在 `posts/` 下；学习笔记使用 `posts/学习/YYYY-MM/`，其中 `YYYY-MM` 与文章日期一致。当前文章位于 `posts/学习/2026-10/`、`posts/学习/2026-11/` 和 `posts/随笔/`。网页上的分类由文章的 `category` 字段决定，与文件夹层级无关。构建脚本会递归读取 Markdown 文件，移动文件不会改变博客文章链接；更改文件名会改变链接。
+
+学习笔记中的图片放在根目录 `assets/`，源文件从年月文件夹引用时写作 `../../../assets/图片名`，方便直接预览 Markdown。构建脚本会把这类图片引用转换为网页使用的 `assets/图片名`。
 
 ## 上传 Markdown
 
-如果已发布到 GitHub，打开 [Hamster-zc.github.io 仓库的 posts 文件夹](https://github.com/Hamster-zc/Hamster-zc.github.io/tree/main/posts)，进入对应的分类文件夹（如 `学习` 或 `随笔`），点击 **Add file → Upload files**，选择下载的 `.md` 文件，点击 **Commit changes**。新分类可先用 **Add file → Create new file** 在相应路径下创建文章。稍等 [Actions](https://github.com/Hamster-zc/Hamster-zc.github.io/actions) 部署完成，博客就会显示新文章。
+如果已发布到 GitHub，打开 [Hamster-zc.github.io 仓库的 posts 文件夹](https://github.com/Hamster-zc/Hamster-zc.github.io/tree/main/posts)，进入对应文件夹（学习笔记如 `学习/2026-11`，随笔如 `随笔`），点击 **Add file → Upload files**，选择下载的 `.md` 文件，点击 **Commit changes**。新月份可先用 **Add file → Create new file** 在相应路径下创建文章。稍等 [Actions](https://github.com/Hamster-zc/Hamster-zc.github.io/actions) 部署完成，博客就会显示新文章。
 
-如果从本地上传，把文件放入 `C:\ZC\Blog\posts\<一级分类>`（有二级分类时继续建子文件夹），然后运行：
+如果从本地上传，学习笔记放入 `C:\ZC\Blog\posts\学习\YYYY-MM`，然后运行：
 
 ```bash
 npm run build

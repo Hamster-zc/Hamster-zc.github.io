@@ -32,7 +32,7 @@ function parsePost(source, filename) {
     subcategory: categoryParts[1] || '',
     summary: meta.summary,
     tags: (meta.tags || '').split(',').map(tag => tag.trim()).filter(Boolean),
-    body: match[2].trim()
+    body: match[2].trim().replace(/(!\[[^\]]*\]\()(?:\.\.\/)+assets\//g, '$1assets/')
   };
 }
 
